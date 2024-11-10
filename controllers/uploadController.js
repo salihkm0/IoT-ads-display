@@ -6,7 +6,8 @@ const axios = require("axios");
 require("dotenv").config();
 
 const piServers = [
-  "http://localhost:3001",
+  // "http://localhost:3001",
+  "https://fe39-2409-40f3-2c-f104-de4-9fa6-6b3b-5d67.ngrok-free.app",
   // Add more Pi server URLs as needed
 ];
 
