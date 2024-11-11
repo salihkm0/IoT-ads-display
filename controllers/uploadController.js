@@ -8,6 +8,7 @@ require("dotenv").config();
 const piServers = [
   // "http://localhost:3001"
   "https://f762-2409-40f3-2c-f104-51e2-7df9-567d-d2a.ngrok-free.app",
+  "https://7363-117-216-18-140.ngrok-free.app",
   // Add more Pi server URLs as needed
 ];
 
