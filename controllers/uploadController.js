@@ -6,11 +6,13 @@ const axios = require("axios");
 require("dotenv").config();
 
 const piServers = [
-  // "http://localhost:3001",
-  "https://fe39-2409-40f3-2c-f104-de4-9fa6-6b3b-5d67.ngrok-free.app",
+  // "http://localhost:3001"
+  "https://f762-2409-40f3-2c-f104-51e2-7df9-567d-d2a.ngrok-free.app",
   // Add more Pi server URLs as needed
 ];
 
+
+//for upload files
 exports.uploadVideo = async (req, res) => {
   try {
     if (!req.file) {
@@ -82,6 +84,8 @@ exports.getVideos = async (req, res) => {
   }
 };
 
+
+//for deleting
 exports.deleteVideo = async (req, res) => {
   try {
     const videoId = req.params.id;
