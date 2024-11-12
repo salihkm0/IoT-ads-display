@@ -29,10 +29,9 @@ exports.uploadVideo = async (req, res) => {
     const uploadedFileSizeMB = req.file.size / (1024 * 1024);
     const videoDuration = result.duration;
 
-    const maxDuration = 30;
-    const maxSizeMB = 38;
+    const maxSizeMB = 350;
 
-    if (videoDuration > maxDuration || uploadedFileSizeMB > maxSizeMB) {
+    if (uploadedFileSizeMB > maxSizeMB) {
       await cloudinary.uploader.destroy(result.public_id, {
         resource_type: "video",
       });
