@@ -1,4 +1,4 @@
-import Rpi from"../../models/rpiModel.js";
+import Rpi from "../../models/rpiModel.js";
 
 // Create a new Raspberry Pi entry
 export const createRpi = async (req, res) => {
@@ -10,32 +10,47 @@ export const createRpi = async (req, res) => {
       wifi_ssid,
       wifi_password,
       rpi_status,
+      vehicle_no,
+      owner_name,
+      owner_phone,
+      location,
     } = req.body;
 
-    // Check if required fields are missing
-    if (!rpi_id || !rpi_name || !rpi_serverUrl || !wifi_ssid || !wifi_password) {
+    if (
+      !rpi_id ||
+      !rpi_name ||
+      !rpi_serverUrl ||
+      !wifi_ssid ||
+      !wifi_password ||
+      !vehicle_no ||
+      !owner_name ||
+      !owner_phone ||
+      !location
+    ) {
       return res.status(400).json({
-        message: "Missing required fields. rpi_id, rpi_name, rpi_serverUrl, wifi_ssid, and wifi_password are required.",
+        message:
+          "All fields are required. rpi_id, rpi_name, rpi_serverUrl, wifi_ssid, wifi_password , vehicle_no , owner_name , owner_phone , location.",
       });
     }
 
-    // Create a new Raspberry Pi instance
     const newRpi = new Rpi({
       rpi_id,
       rpi_name,
       rpi_serverUrl,
       wifi_ssid,
       wifi_password,
-      rpi_status: rpi_status || "in_active", // Default to "in_active" if not provided
+      vehicle_no,
+      owner_name,
+      owner_phone,
+      location,
+      rpi_status: rpi_status || "in_active",
     });
 
-    // Save the new Raspberry Pi entry to the database
     const savedRpi = await newRpi.save();
-    console.log("Saved : " + savedRpi)
-    // Send a success response with the saved data
-    res.status(201).json(savedRpi);
+    console.log({success: true , message: "Raspberry Pi saved successfully " + savedRpi});
+    res.status(201).json({success: true , message: "Raspberry Pi saved successfully " + savedRpi});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to create Raspberry Pi" });
+    res.status(500).json({ message: "Failed to create Raspberry Pi",error: error });
   }
 };

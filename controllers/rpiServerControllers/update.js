@@ -14,10 +14,10 @@ export const updateRpi = async (req, res) => {
       return res.status(404).json({ message: "Raspberry Pi not found" });
     }
 
-    res.status(200).json(updatedRpi);
+    res.status(200).json({success: true , message: "Raspberry Pi updated successfully " + updatedRpi});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to update Raspberry Pi" });
+    res.status(500).json({ message: "Failed to update Raspberry Pi"  , error: error});
   }
 };
 
@@ -41,9 +41,9 @@ export const updateRpiStatus = async (req, res) => {
       return res.status(404).json({ message: "Raspberry Pi not found" });
     }
 
-    res.status(200).json(updatedRpi);
+    res.status(200).json({success: true , message: "Raspberry Pi status updated successfully " + updatedRpi});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to update Raspberry Pi status" });
+    res.status(500).json({ message: "Failed to update Raspberry Pi status", error: error });
   }
 };

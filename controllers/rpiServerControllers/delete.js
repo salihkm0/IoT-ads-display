@@ -12,9 +12,9 @@ export const deleteRpi = async (req, res) => {
         return res.status(404).json({ message: "Raspberry Pi not found" });
       }
   
-      res.status(200).json({ message: "Raspberry Pi deleted successfully" });
+      res.status(200).json({success: true , message: "Raspberry Pi deleted successfully " + deletedRpi});
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Failed to delete Raspberry Pi" });
+      res.status(500).json({ message: "Failed to delete Raspberry Pi",error: error});
     }
   };
