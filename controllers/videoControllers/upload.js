@@ -132,6 +132,7 @@ export const uploadVideo = async (req, res) => {
       filename: req.body.filename || req.file.originalname,
       fileUrl: result.secure_url,
       cloudinaryId: result.public_id,
+      fileSize : result.bytes,
     });
 
     await newVideo.save();
