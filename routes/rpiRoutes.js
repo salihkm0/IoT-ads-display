@@ -47,7 +47,7 @@ rpiRoutes.get("/ping", (req, res) => {
 //     }
 //   });
 
-rpiRoutes.post("/update", async (req, res) => {
+rpiRoutes.post("/rpi/update", async (req, res) => {
   const { rpi_id, rpi_serverUrl, rpi_status } = req.body;
 
   if (!rpi_id || !rpi_serverUrl) {
