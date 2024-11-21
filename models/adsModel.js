@@ -7,7 +7,8 @@ const adsModelSchema = new mongoose.Schema(
     fileUrl: { type: String, required: true },
     description: String,
     brand: String,
-    fileSize : Number
+    fileSize : Number,
+    expiredDate: Date,
   },
   {
     timestamps: true,

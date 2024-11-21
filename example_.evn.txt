@@ -1,5 +1,6 @@
 PORT = Port Number
 DB_URL = mongoDB URL
+JWT_SECRET = JWT SECRET
 
 # CLOUDINARY
 
