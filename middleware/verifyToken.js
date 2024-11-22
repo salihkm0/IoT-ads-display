@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-
 // Middleware to check if the JWT is valid
 export const verifyTokenFrontend = (req, res, next) => {
   // Get token from the Authorization header
@@ -10,7 +9,7 @@ export const verifyTokenFrontend = (req, res, next) => {
   }
 
   // Verify token
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Invalid token" });
     }
