@@ -6,6 +6,7 @@ import uploadRoutes from "./routes/videoRoutes.js";
 import rpiRoutes from "./routes/rpiRoutes.js";
 import { checkPiServerStatus } from "./utils/checkPiServerStatus.js";
 import authRoutes from "./routes/authRoutes.js";
+import jwtRoutes from "./routes/tokenRoutes.js";
 
 const app = express();
 dotenv.config();
@@ -18,6 +19,9 @@ const port = process.env.PORT || 3000;
 app.use("/api", uploadRoutes);
 app.use("/api", rpiRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", jwtRoutes);
+
+
 
 dbConnection()
   .then(() => {
