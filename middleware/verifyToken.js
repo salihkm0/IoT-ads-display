@@ -1,8 +1,7 @@
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
+import jwt from "jsonwebtoken";
 
 // Middleware to check if the JWT is valid
-const verifyToken = (req, res, next) => {
+export const verifyTokenFrontend = (req, res, next) => {
   // Get token from the Authorization header
   const token = req.headers["authorization"]?.split(" ")[1];
 

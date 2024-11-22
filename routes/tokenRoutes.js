@@ -1,10 +1,11 @@
-import { verifyToken } from "../utils/jwt";
-const express = require("express");
+import { verifyTokenFrontend } from "../middleware/verifyToken.js";
+
+import express  from "express";
 
 const jwtRoutes = express.Router();
 
 // A route to check if the token is valid
-jwtRoutes.get("/check-token", verifyToken, (req, res) => {
+jwtRoutes.get("/check-token",verifyTokenFrontend , (req, res) => {
   res.status(200).json({ message: "Token is valid", user: req.user });
 });
 
