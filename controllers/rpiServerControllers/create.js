@@ -4,7 +4,6 @@ import Rpi from "../../models/rpiModel.js";
 export const createRpi = async (req, res) => {
   try {
     const {
-      rpi_id,
       rpi_name,
       rpi_serverUrl,
       wifi_ssid,
@@ -17,6 +16,7 @@ export const createRpi = async (req, res) => {
     } = req.body;
 
     if (
+      !rpi_name ||
       !rpi_id ||
       !vehicle_no ||
       !owner_name ||
@@ -25,7 +25,8 @@ export const createRpi = async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "All fields are required.rpi_name,  vehicle_no , owner_name , owner_phone , location.",
+          "All fields are required. rpi_name, vehicle_no , owner_name , owner_phone , location.",
+        success: false,
       });
     }
 
@@ -43,10 +44,21 @@ export const createRpi = async (req, res) => {
     });
 
     const savedRpi = await newRpi.save();
-    console.log({success: true , message: "Raspberry Pi saved successfully " + savedRpi});
-    res.status(201).json({success: true , message: "Raspberry Pi saved successfully " + savedRpi});
+    console.log({
+      message: "Raspberry Pi saved successfully " + savedRpi,
+    });
+    res.status(201).json({
+      success: true,
+      message: "Raspberry Pi saved successfully " + savedRpi,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to create Raspberry Pi",error: error });
+    res
+      .status(500)
+      .json({
+        message: "Failed to create Raspberry Pi",
+        error: error,
+        success: false,
+      });
   }
 };
