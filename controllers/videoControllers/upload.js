@@ -92,9 +92,11 @@ import streamifier from "streamifier";
 dotenv.config();
 
 export const uploadVideo = async (req, res) => {
+
+  const {filename,description,brand,expiredDate} = req.body;
   try {
     if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
+      return res.status(400).json({ message: "No file uploaded" ,success: false});
     }
 
     // Create a readable stream from the buffer
@@ -125,14 +127,19 @@ export const uploadVideo = async (req, res) => {
       });
       return res.status(400).json({
         message: `Video size exceeds the ${maxSizeMB}MB limit.`,
+        success: false 
       });
     }
 
     const newVideo = new Video({
-      filename: req.body.filename || req.file.originalname,
+      filename: filename || req.file.originalname,
+      description: description,
+      brand: brand,
+      expiredDate: expiredDate,
       fileUrl: result.secure_url,
       cloudinaryId: result.public_id,
       fileSize : result.bytes,
+      status: "active",
     });
 
     await newVideo.save();
@@ -149,7 +156,7 @@ export const uploadVideo = async (req, res) => {
             fileUrl: newVideo.fileUrl,
           });
         } catch (error) {
-          console.error(`Failed to notify server at ${server.rpi_serverUrl}`, error);
+          console.error(`Failed to notify server at ${server.rpi_serverUrl}`);
           errors.push({
             serverUrl: server.rpi_serverUrl,
             message: error.message,
@@ -165,14 +172,15 @@ export const uploadVideo = async (req, res) => {
         message: "Video uploaded successfully, but some servers could not be notified.",
         video: newVideo,
         notificationErrors: errors,
+        success: true
       });
     }
 
-    res.json({ message: "Video uploaded successfully and all servers notified!", video: newVideo });
+    res.json({ message: "Video uploaded successfully and all servers notified!", video: newVideo,success: true});
     console.log("Video uploaded and all Pi servers notified");
   } catch (error) {
     console.error("Error uploading video:", error);
-    res.status(500).json({ message: "Failed to upload video", error });
+    res.status(500).json({ message: "Failed to upload video", error : error, success: false });
   }
 };
 

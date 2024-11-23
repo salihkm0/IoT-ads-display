@@ -9,7 +9,7 @@ export const deleteVideo = async (req, res) => {
     const video = await Video.findById(videoId);
 
     if (!video) {
-      return res.status(404).json({ message: "Video not found" });
+      return res.status(404).json({ message: "Video not found", success: false});
     }
 
     // Delete video from Cloudinary
@@ -19,16 +19,10 @@ export const deleteVideo = async (req, res) => {
     );
 
     if (cloudinaryResponse.result !== "ok") {
-      return res.status(500).json({ message: "Failed to delete video from Cloudinary" });
+      return res.status(500).json({ message: "Failed to delete video from Cloudinary", success: false });
     }
-
-    // Delete video entry from the database
     await Video.findByIdAndDelete(videoId);
-
-    // Get all Raspberry Pi server URLs from the database
     const rpServers = await Rpi.find().select("rpi_serverUrl");
-
-    // Notify all Pi servers about video deletion
     await Promise.all(
       rpServers.map(async (server) => {
         try {
@@ -36,15 +30,15 @@ export const deleteVideo = async (req, res) => {
             filename: video.filename,
           });
         } catch (error) {
-          console.error(`Failed to notify server at ${server.rpi_serverUrl}`, error);
+          console.error(`Failed to notify server at ${server.rpi_serverUrl}`,);
         }
       })
     );
 
-    res.json({ message: "Video deleted successfully" });
+    res.json({ message: "Video deleted successfully", success: true });
     console.log("Video deleted and all Pi servers notified");
   } catch (error) {
     console.error("Error deleting video:", error);
-    res.status(500).json({ message: "Failed to delete video", error });
+    res.status(500).json({ message: "Failed to delete video", error, success: false  });
   }
 };

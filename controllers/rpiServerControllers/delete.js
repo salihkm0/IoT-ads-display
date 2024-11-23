@@ -4,9 +4,9 @@ import Rpi from"../../models/rpiModel.js";
 // Delete Raspberry Pi by rpi_id
 export const deleteRpi = async (req, res) => {
     try {
-      const { rpi_id } = req.params;
+      const { id } = req.params;
   
-      const deletedRpi = await Rpi.findOneAndDelete({ rpi_id });
+      const deletedRpi = await Rpi.findByIdAndDelete({ id });
   
       if (!deletedRpi) {
         return res.status(404).json({ message: "Raspberry Pi not found" });

@@ -9,6 +9,7 @@ const adsModelSchema = new mongoose.Schema(
     brand: String,
     fileSize : Number,
     expiredDate: Date,
+    status : { type: String, enum:[ "active", "expired"] ,default: "active" },
   },
   {
     timestamps: true,

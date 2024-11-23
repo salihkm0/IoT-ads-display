@@ -25,12 +25,12 @@ export const createRpi = async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "All fields are required. rpi_id, vehicle_no , owner_name , owner_phone , location.",
+          "All fields are required.rpi_name,  vehicle_no , owner_name , owner_phone , location.",
       });
     }
 
     const newRpi = new Rpi({
-      rpi_id,
+      // rpi_id,
       rpi_name,
       rpi_serverUrl,
       wifi_ssid,

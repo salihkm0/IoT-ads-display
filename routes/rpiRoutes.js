@@ -14,44 +14,51 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const rpiRoutes = express.Router();
 
-rpiRoutes.route("/rpi").post(protect,createRpi).get(protect,getAllRpis);
+rpiRoutes.route("/rpi").post(protect, createRpi).get(protect, getAllRpis);
 
 rpiRoutes
-  .route("/rpi/:rpi_id")
+  .route("/rpi/:id")
   .get(getRpiById)
-  .put(protect,updateRpi)
-  .delete(protect,deleteRpi);
+  .put(protect, updateRpi)
+  .delete(protect, deleteRpi);
 
-rpiRoutes.route("/rpi/status/:rpi_id").put(updateRpiStatus);
+rpiRoutes.route("/rpi/status/:id").put(updateRpiStatus);
 
 // Route for server check (ping)
 rpiRoutes.get("/ping", (req, res) => {
-    res.status(200).json({ message: "Server is online", success: true });
-  });
+  res.status(200).json({ message: "Server is online", success: true });
+});
 
-rpiRoutes.post("/rpi/update", async (req, res) => {
-  const { rpi_id, rpi_serverUrl, rpi_status } = req.body;
+rpiRoutes.post("/rpi/update/:id", async (req, res) => {
+  const { id } = req.params;
+  const { rpi_serverUrl, rpi_status } = req.body;
 
-  if (!rpi_id || !rpi_serverUrl) {
-    return res.status(400).json({ error: "Missing required fields: rpi_id or rpi_serverUrl" });
+  if (!id || !rpi_serverUrl) {
+    return res
+      .status(400)
+      .json({
+        error: "Missing required fields: id or rpi_serverUrl",
+        success: false,
+      });
   }
-  console.log(`Received online notification from Pi server ${rpi_id}`);
+  console.log(`Received online notification from Pi server ${id}`);
 
   try {
-    const rpi = await rpiModel.findOneAndUpdate(
-      { rpi_id }, 
+    const rpi = await rpiModel.findByIdAndUpdate(
+      { id },
       { rpi_serverUrl, rpi_status },
       { upsert: true, new: true }
     );
 
-    return res.status(200).json({ message: "RPI updated successfully.", data: rpi });
+    return res
+      .status(200)
+      .json({ message: "RPI updated successfully.", data: rpi, success: true });
   } catch (error) {
     console.error(`Error updating RPI: ${error.message}`);
-    return res.status(500).json({ error: "Internal server error." });
+    return res
+      .status(500)
+      .json({ error: "Internal server error.", success: false });
   }
 });
 
 export default rpiRoutes;
-
-
-
