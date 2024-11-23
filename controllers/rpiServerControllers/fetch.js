@@ -4,7 +4,7 @@ import Rpi from"../../models/rpiModel.js";
 export const getAllRpis = async (req, res) => {
   try {
     const rpis = await Rpi.find();
-    res.status(200).json({success: true , message: "Raspberry Pi fetched successfully " + rpis});
+    res.status(200).json({success: true , message: "Raspberry Pi fetched successfully ",  rpis : rpis});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to retrieve Raspberry Pis" , error: error});
