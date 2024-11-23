@@ -18,10 +18,6 @@ export const createRpi = async (req, res) => {
 
     if (
       !rpi_id ||
-      !rpi_name ||
-      !rpi_serverUrl ||
-      !wifi_ssid ||
-      !wifi_password ||
       !vehicle_no ||
       !owner_name ||
       !owner_phone ||
@@ -29,7 +25,7 @@ export const createRpi = async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "All fields are required. rpi_id, rpi_name, rpi_serverUrl, wifi_ssid, wifi_password , vehicle_no , owner_name , owner_phone , location.",
+          "All fields are required. rpi_id, vehicle_no , owner_name , owner_phone , location.",
       });
     }
 
