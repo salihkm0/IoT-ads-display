@@ -9,16 +9,16 @@ import { protect } from "../middleware/authMiddleware.js";
 const uploadRoutes = express.Router();
 
 // Route to upload a single video
-uploadRoutes.post("/upload", upload.single("file"), uploadVideo);
+uploadRoutes.post("/upload",protect, upload.single("file"), uploadVideo);
 
 // Route to fetch all videos
-uploadRoutes.get("/videos", getVideos);
+uploadRoutes.get("/videos",protect, getVideos);
 
 // Route to fetch video by name
-uploadRoutes.get("/video/:filename", getVideosByFilename);
+uploadRoutes.get("/video/:filename",protect, getVideosByFilename);
 
 // Route to delete videos
-uploadRoutes.delete("/delete-video/:id", deleteVideo);
+uploadRoutes.delete("/delete-video/:id",protect, deleteVideo);
 
 // Export the routes
 export default uploadRoutes;

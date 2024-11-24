@@ -17,7 +17,6 @@ export const createRpi = async (req, res) => {
 
     if (
       !rpi_name ||
-      !rpi_id ||
       !vehicle_no ||
       !owner_name ||
       !owner_phone ||
@@ -31,9 +30,9 @@ export const createRpi = async (req, res) => {
     }
 
     const newRpi = new Rpi({
-      // rpi_id,
+      rpi_id,
       rpi_name,
-      rpi_serverUrl,
+      rpi_serverUrl : rpi_serverUrl || "",
       wifi_ssid,
       wifi_password,
       vehicle_no,

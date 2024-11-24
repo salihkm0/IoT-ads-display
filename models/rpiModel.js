@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const rpiModelSchema = new mongoose.Schema(
   {
-    // rpi_id: { type: String, unique: true },
+    rpi_id: { type: String,unique: true},
     rpi_name: String,
     rpi_serverUrl: String,
     wifi_ssid: String,
