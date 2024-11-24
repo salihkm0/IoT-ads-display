@@ -17,12 +17,12 @@ export const checkPiServerStatus = async () => {
           // If the server responds, set status to "active"
           if (response.status === 200) {
             await Rpi.findByIdAndUpdate(server._id, { rpi_status: "active" });
-            console.log(`Server ${server.rpi_id} is active`);
+            console.log(`Server ${server.rpi_name} is active`);
           }
         } catch (error) {
           // If the server doesn't respond, set status to "in_active"
           await Rpi.findByIdAndUpdate(server._id, { rpi_status: "in_active" });
-          console.log(`Server ${server.rpi_id} is inactive`);
+          console.log(`Server ${server.rpi_name} is inactive`);
         }
       })
     );

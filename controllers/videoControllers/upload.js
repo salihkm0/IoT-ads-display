@@ -91,63 +91,146 @@ import streamifier from "streamifier";
 
 dotenv.config();
 
-export const uploadVideo = async (req, res) => {
+// export const uploadVideo = async (req, res) => {
 
-  const {filename,description,brand,expiredDate} = req.body;
+//   const {filename,description,brand,expiredDate} = req.body;
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ message: "No file uploaded" ,success: false});
+//     }
+
+//     // Create a readable stream from the buffer
+//     const bufferStream = streamifier.createReadStream(req.file.buffer);
+
+//     // Upload video to Cloudinary
+//     const result = await new Promise((resolve, reject) => {
+//       const uploadStream = cloudinary.uploader.upload_stream(
+//         {
+//           resource_type: "video",
+//           folder: "ads_videos",
+//         },
+//         (error, result) => {
+//           if (error) return reject(error);
+//           resolve(result);
+//         }
+//       );
+
+//       bufferStream.pipe(uploadStream);
+//     });
+
+//     const uploadedFileSizeMB = req.file.size / (1024 * 1024);
+//     const maxSizeMB = 350;
+
+//     if (uploadedFileSizeMB > maxSizeMB) {
+//       await cloudinary.uploader.destroy(result.public_id, {
+//         resource_type: "video",
+//       });
+//       return res.status(400).json({
+//         message: `Video size exceeds the ${maxSizeMB}MB limit.`,
+//         success: false
+//       });
+//     }
+
+//     const newVideo = new Video({
+//       filename: filename || req.file.originalname,
+//       description: description,
+//       brand: brand,
+//       expiredDate: expiredDate,
+//       fileUrl: result.secure_url,
+//       cloudinaryId: result.public_id,
+//       fileSize : result.bytes,
+//       status: "active",
+//     });
+
+//     await newVideo.save();
+
+//     // Notify all Raspberry Pi servers
+//     const rpServers = await Rpi.find();
+//     const errors = [];
+
+//     await Promise.all(
+//       rpServers.map(async (server) => {
+//         try {
+//           await axios.post(`${server.rpi_serverUrl}/download-video`, {
+//             filename: newVideo.filename,
+//             fileUrl: newVideo.fileUrl,
+//           });
+//         } catch (error) {
+//           console.error(`Failed to notify server at ${server.rpi_serverUrl}`);
+//           errors.push({
+//             serverUrl: server.rpi_serverUrl,
+//             message: error.message,
+//             status: error.response?.status || "No response",
+//           });
+//         }
+//       })
+//     );
+
+//     // If there were any errors notifying Pi servers, include them in the response
+//     if (errors.length > 0) {
+//       return res.status(206).json({
+//         message: "Video uploaded successfully, but some servers could not be notified.",
+//         video: newVideo,
+//         notificationErrors: errors,
+//         success: true
+//       });
+//     }
+
+//     res.json({ message: "Video uploaded successfully and all servers notified!", video: newVideo,success: true});
+//     console.log("Video uploaded and all Pi servers notified");
+//   } catch (error) {
+//     console.error("Error uploading video:", error);
+//     res.status(500).json({ message: "Failed to upload video", error : error, success: false });
+//   }
+// };
+
+// UPLOAD video
+export const uploadVideo = async (req, res) => {
+  const { filename, description, brand, expiredDate } = req.body;
+
   try {
     if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" ,success: false});
+      return res
+        .status(400)
+        .json({ success: false, message: "No file uploaded" });
     }
 
-    // Create a readable stream from the buffer
     const bufferStream = streamifier.createReadStream(req.file.buffer);
-
-    // Upload video to Cloudinary
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "video",
-          folder: "ads_videos",
-        },
+        { resource_type: "video", folder: "ads_videos" },
         (error, result) => {
           if (error) return reject(error);
           resolve(result);
         }
       );
-
       bufferStream.pipe(uploadStream);
     });
 
-    const uploadedFileSizeMB = req.file.size / (1024 * 1024);
-    const maxSizeMB = 350;
-
-    if (uploadedFileSizeMB > maxSizeMB) {
+    const fileSizeMB = req.file.size / (1024 * 1024);
+    if (fileSizeMB > 350) {
       await cloudinary.uploader.destroy(result.public_id, {
         resource_type: "video",
       });
-      return res.status(400).json({
-        message: `Video size exceeds the ${maxSizeMB}MB limit.`,
-        success: false 
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "Video size exceeds 350MB limit." });
     }
 
-    const newVideo = new Video({
+    const newVideo = await Video.create({
       filename: filename || req.file.originalname,
-      description: description,
-      brand: brand,
-      expiredDate: expiredDate,
+      description,
+      brand,
+      expiredDate,
       fileUrl: result.secure_url,
       cloudinaryId: result.public_id,
-      fileSize : result.bytes,
+      fileSize: result.bytes,
       status: "active",
     });
 
-    await newVideo.save();
-
-    // Notify all Raspberry Pi servers
+    // Notify Raspberry Pi servers
     const rpServers = await Rpi.find();
     const errors = [];
-
     await Promise.all(
       rpServers.map(async (server) => {
         try {
@@ -156,31 +239,32 @@ export const uploadVideo = async (req, res) => {
             fileUrl: newVideo.fileUrl,
           });
         } catch (error) {
-          console.error(`Failed to notify server at ${server.rpi_serverUrl}`);
           errors.push({
             serverUrl: server.rpi_serverUrl,
             message: error.message,
-            status: error.response?.status || "No response",
           });
         }
       })
     );
 
-    // If there were any errors notifying Pi servers, include them in the response
     if (errors.length > 0) {
       return res.status(206).json({
-        message: "Video uploaded successfully, but some servers could not be notified.",
+        success: true,
+        message: "Video uploaded with partial server notifications",
         video: newVideo,
         notificationErrors: errors,
-        success: true
       });
     }
 
-    res.json({ message: "Video uploaded successfully and all servers notified!", video: newVideo,success: true});
-    console.log("Video uploaded and all Pi servers notified");
+    res.json({
+      success: true,
+      message: "Video uploaded successfully",
+      video: newVideo,
+    });
   } catch (error) {
     console.error("Error uploading video:", error);
-    res.status(500).json({ message: "Failed to upload video", error : error, success: false });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to upload video", error });
   }
 };
-
