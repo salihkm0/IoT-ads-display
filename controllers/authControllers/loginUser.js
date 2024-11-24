@@ -18,9 +18,10 @@ export const loginUser = async (req, res) => {
   
         if (isMatch) {
           return res.status(200).json({
-            _id: user._id,
-            username: user.username,
-            email: user.email,
+            // _id: user._id,
+            // username: user.username,
+            // email: user.email,
+            user: user,
             token: generateToken(user._id),
           });
         }
