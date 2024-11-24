@@ -29,11 +29,11 @@ rpiRoutes.get("/ping", (req, res) => {
   res.status(200).json({ message: "Server is online", success: true });
 });
 
-rpiRoutes.post("/rpi/update/:id", async (req, res) => {
-  const { id } = req.params;
+rpiRoutes.post("/rpi/update/:rpi_id", async (req, res) => {
+  const { rpi_id } = req.params;
   const { rpi_serverUrl, rpi_status } = req.body;
 
-  if (!id || !rpi_serverUrl) {
+  if (!rpi_id || !rpi_serverUrl) {
     return res
       .status(400)
       .json({
@@ -44,8 +44,8 @@ rpiRoutes.post("/rpi/update/:id", async (req, res) => {
   console.log(`Received online notification from Pi server ${id}`);
 
   try {
-    const rpi = await rpiModel.findByIdAndUpdate(
-      { id },
+    const rpi = await rpiModel.findOneAndUpdate(
+      { rpi_id },
       { rpi_serverUrl, rpi_status },
       { upsert: true, new: true }
     );
