@@ -186,7 +186,7 @@ dotenv.config();
 
 // UPLOAD video
 export const uploadVideo = async (req, res) => {
-  const { filename, description, brand, expiredDate } = req.body;
+  const { filename, description, brand, expiryDate } = req.body;
 
   try {
     if (!req.file) {
@@ -221,7 +221,7 @@ export const uploadVideo = async (req, res) => {
       filename: filename || req.file.originalname,
       description,
       brand,
-      expiredDate,
+      expiryDate,
       fileUrl: result.secure_url,
       cloudinaryId: result.public_id,
       fileSize: result.bytes,
