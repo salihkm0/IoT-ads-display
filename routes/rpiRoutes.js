@@ -30,7 +30,7 @@ rpiRoutes.get("/ping", (req, res) => {
   res.status(200).json({ message: "Server is online", success: true });
 });
 
-rpiRoutes.post("/rpi/update/:rpi_id", async (req, res) => {
+rpiRoutes.post("/rpi/update", async (req, res) => {
   // const { rpi_id } = req.params;
   const { rpi_serverUrl, rpi_status,rpi_id } = req.body;
 
