@@ -42,7 +42,7 @@ rpiRoutes.post("/rpi/update", async (req, res) => {
         success: false,
       });
   }
-  console.log(`Received online notification from Pi server ${id}`);
+  console.log(`Received online notification from Pi server ${rpi_id}`);
 
   try {
     const rpi = await rpiModel.findOneAndUpdate(
