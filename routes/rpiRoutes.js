@@ -15,7 +15,10 @@ import upload from "../middleware/uploadMiddleware.js";
 
 const rpiRoutes = express.Router();
 
-rpiRoutes.route("/rpi").post(protect,upload.none(), createRpi).get(protect, getAllRpis);
+rpiRoutes
+  .route("/rpi")
+  .post(protect, upload.none(), createRpi)
+  .get(protect, getAllRpis);
 
 rpiRoutes
   .route("/rpi/:id")
@@ -32,22 +35,20 @@ rpiRoutes.get("/ping", (req, res) => {
 
 rpiRoutes.post("/rpi/update", async (req, res) => {
   // const { rpi_id } = req.params;
-  const { rpi_serverUrl, rpi_status,rpi_id } = req.body;
+  const { rpi_serverUrl, rpi_status, rpi_id } = req.body;
 
   if (!rpi_id || !rpi_serverUrl) {
-    return res
-      .status(400)
-      .json({
-        error: "Missing required fields: id or rpi_serverUrl",
-        success: false,
-      });
+    return res.status(400).json({
+      error: "Missing required fields: id or rpi_serverUrl",
+      success: false,
+    });
   }
   console.log(`Received online notification from Pi server ${rpi_id}`);
 
   try {
     const rpi = await rpiModel.findOneAndUpdate(
       { rpi_id },
-      { rpi_serverUrl, rpi_status },
+      { rpi_serverUrl: rpi_serverUrl ? rpi_serverUrl : "", rpi_status },
       { upsert: true, new: true }
     );
 

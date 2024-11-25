@@ -207,6 +207,8 @@ export const uploadVideo = async (req, res) => {
       bufferStream.pipe(uploadStream);
     });
 
+    console.log("Cloudinary result: "+ JSON.stringify(result))
+
     const fileSizeMB = req.file.size / (1024 * 1024);
     if (fileSizeMB > 350) {
       await cloudinary.uploader.destroy(result.public_id, {
