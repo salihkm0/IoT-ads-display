@@ -15,7 +15,7 @@ export const getAllRpis = async (req, res) => {
 export const getRpiById = async (req, res) => {
   try {
     const { id } = req.params;
-    const rpi = await Rpi.findById({ id });
+    const rpi = await Rpi.findById(id);
 
     if (!rpi) {
       return res.status(404).json({ message: "Raspberry Pi not found" });

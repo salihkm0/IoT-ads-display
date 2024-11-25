@@ -12,10 +12,10 @@ const uploadRoutes = express.Router();
 uploadRoutes.post("/upload",protect, upload.single("file"), uploadVideo);
 
 // Route to fetch all videos
-uploadRoutes.get("/videos",protect, getVideos);
+uploadRoutes.get("/videos", getVideos);
 
 // Route to fetch video by name
-uploadRoutes.get("/video/:filename",protect, getVideosByFilename);
+uploadRoutes.get("/video/:filename", getVideosByFilename);
 
 // Route to delete videos
 uploadRoutes.delete("/delete-video/:id",protect, deleteVideo);

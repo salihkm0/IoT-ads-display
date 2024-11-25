@@ -6,7 +6,7 @@ export const updateRpi = async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    const updatedRpi = await Rpi.findByIdAndUpdate({ id }, updateData, {
+    const updatedRpi = await Rpi.findByIdAndUpdate(id, updateData, {
       new: true,
     });
 

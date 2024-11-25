@@ -6,7 +6,7 @@ export const deleteRpi = async (req, res) => {
     try {
       const { id } = req.params;
   
-      const deletedRpi = await Rpi.findByIdAndDelete({ id });
+      const deletedRpi = await Rpi.findByIdAndDelete(id);
   
       if (!deletedRpi) {
         return res.status(404).json({ message: "Raspberry Pi not found" });

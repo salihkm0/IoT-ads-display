@@ -11,10 +11,11 @@ import {
 import { deleteRpi } from "../controllers/rpiServerControllers/delete.js";
 import rpiModel from "../models/rpiModel.js";
 import { protect } from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 const rpiRoutes = express.Router();
 
-rpiRoutes.route("/rpi").post(protect, createRpi).get(protect, getAllRpis);
+rpiRoutes.route("/rpi").post(protect,upload.none(), createRpi).get(protect, getAllRpis);
 
 rpiRoutes
   .route("/rpi/:id")
