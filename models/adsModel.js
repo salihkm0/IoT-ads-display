@@ -6,10 +6,13 @@ const adsModelSchema = new mongoose.Schema(
     filename: { type: String, required: true },
     fileUrl: { type: String, required: true },
     description: String,
-    brand: String,
-    fileSize : Number,
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "brand",
+      required: true,
+    },
+    fileSize: Number,
     expiryDate: Date,
-    status : { type: String, enum:[ "active", "expired"] ,default: "active" },
   },
   {
     timestamps: true,

@@ -1,26 +1,31 @@
 import express from "express";
 import upload from "../middleware/uploadMiddleware.js";
 import { uploadVideo } from "../controllers/videoControllers/upload.js";
-import { getVideos, getVideosByFilename } from "../controllers/videoControllers/fetch.js";
+import { getActiveVideos, getVideos, getVideosByBrand, getVideosByFilename } from "../controllers/videoControllers/fetch.js";
 import { deleteVideo } from "../controllers/videoControllers/delete.js";
 import { protect } from "../middleware/authMiddleware.js";
+import { editVideo } from "../controllers/videoControllers/edit.js";
 
 // Initialize router
-const uploadRoutes = express.Router();
+const videoRoutes = express.Router();
 
 // Route to upload a single video
-uploadRoutes.post("/upload",protect, upload.single("file"), uploadVideo);
+videoRoutes.post("/upload",protect, upload.single("file"), uploadVideo);
 
 // Route to fetch all videos
-uploadRoutes.get("/videos", getVideos);
+videoRoutes.get("/videos", getVideos);
 
 // Route to fetch video by name
-uploadRoutes.get("/video/:filename", getVideosByFilename);
+videoRoutes.get("/video/:filename", getVideosByFilename);
 
+videoRoutes.put("/edit/:videoId",protect, upload.single("file"), editVideo);
 // Route to delete videos
-uploadRoutes.delete("/delete-video/:id",protect, deleteVideo);
+videoRoutes.delete("/delete-video/:id",protect, deleteVideo);
+
+videoRoutes.get("/videos/active", getActiveVideos);
+videoRoutes.get("/videos/brand/:brandId", getVideosByBrand);
 
 // Export the routes
-export default uploadRoutes;
+export default videoRoutes;
 
 

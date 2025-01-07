@@ -21,14 +21,15 @@ export const loginUser = async (req, res) => {
             // _id: user._id,
             // username: user.username,
             // email: user.email,
+            success: true,
             user: user,
             token: generateToken(user._id),
           });
         }
       }
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" ,success: false});
     } catch (error) {
-      return res.status(500).json({ message: "Server error", error: error.message });
+      return res.status(500).json({ message: "Server error", error: error.message , success: false});
     }
   };
   

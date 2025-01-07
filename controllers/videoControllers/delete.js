@@ -82,7 +82,7 @@ export const deleteVideo = async (req, res) => {
         } catch (error) {
           console.error(
             `Failed to notify server ${server.rpi_serverUrl}`,
-            error
+            // error
           );
         }
       })

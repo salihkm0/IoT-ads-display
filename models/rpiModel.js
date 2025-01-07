@@ -11,6 +11,7 @@ const rpiModelSchema = new mongoose.Schema(
     owner_name: String,
     owner_phone: String,
     location: String,
+    display : [Object],
     rpi_status: { type: String, enum: ["active", "in_active"], default: "in_active" },
   },
   {
