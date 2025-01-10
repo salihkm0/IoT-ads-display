@@ -5,7 +5,7 @@ import { generateToken } from "../../utils/jwt.js";
 // Login User
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
-  
+    console.log("body : ", req.body);
     if (!email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }

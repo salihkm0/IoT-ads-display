@@ -32,8 +32,7 @@ dbConnection()
     app.listen(port, () => {
       console.log(`✓ App is running on port: ${port}`);
 
-      // Start the status check
-      setInterval(checkPiServerStatus, 300000); // Run every 5 minutes
+      setInterval(checkPiServerStatus, 300000);
       checkPiServerStatus();
     });
   })
