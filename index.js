@@ -13,7 +13,22 @@ import { swaggerSpec, swaggerUi, swaggerUiOptions } from "./swagger/swagger.js";
 const app = express();
 dotenv.config();
 app.use(express.json());
-app.use(cors());
+const allowedOrigins = ['http://localhost:5173/', 'https://iot-ads-frontend.vercel.app/'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
+
 
 const port = process.env.PORT || 3000;
 
