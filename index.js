@@ -14,7 +14,7 @@ const app = express();
 dotenv.config();
 app.use(express.json());
 const corsOptions = {
-  origin: "https://ecommerce-frontend-pzmt2rvyd-salih-kms-projects.vercel.app",
+  origin: "https://iot-ads-frontend.vercel.app",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
