@@ -15,23 +15,18 @@ dotenv.config();
 app.use(express.json());
 // Use CORS with specific origin
 const corsOptions = {
-  origin: (origin, callback) => {
-    const allowedOrigins = ['http://localhost:5173', 'https://iot-ads-frontend.vercel.app'];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: [
+    "http://localhost:5173",
+    "https://iot-ads-frontend.vercel.app",
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  optionsSuccessStatus: 200 
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
+app.options("*", cors(corsOptions));
 
 const port = process.env.PORT || 3000;
 
@@ -41,9 +36,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api", jwtRoutes);
 app.use("/api/brands", brandRouter);
 
-
 //* Swagger setup
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, swaggerUiOptions)
+);
 
 dbConnection()
   .then(() => {
