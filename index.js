@@ -13,20 +13,14 @@ import { swaggerSpec, swaggerUi, swaggerUiOptions } from "./swagger/swagger.js";
 const app = express();
 dotenv.config();
 app.use(express.json());
-// Use CORS with specific origin
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://iot-ads-frontend.vercel.app",
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: "https://ecommerce-frontend-pzmt2rvyd-salih-kms-projects.vercel.app",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
-  optionsSuccessStatus: 200,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 
 const port = process.env.PORT || 3000;
 
