@@ -1,6 +1,9 @@
 import Video from "../../models/adsModel.js";
 import Rpi from "../../models/rpiModel.js";
-import { cloudinary } from "../../config/cloudinary.js";
+import { Upload } from "@aws-sdk/lib-storage";
+import { s3Client } from "../../config/s3Config.js";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import axios from "axios";
 import dotenv from "dotenv";
 import streamifier from "streamifier";
@@ -18,38 +21,51 @@ export const uploadVideo = async (req, res) => {
         .json({ success: false, message: "No file uploaded" });
     }
 
-    const bufferStream = streamifier.createReadStream(req.file.buffer);
-    const result = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        { resource_type: "video", folder: "ads_videos" },
-        (error, result) => {
-          if (error) return reject(error);
-          resolve(result);
-        }
-      );
-      bufferStream.pipe(uploadStream);
-    });
-
-    console.log("Cloudinary result: "+ JSON.stringify(result))
-
+    // Check file size (500MB limit)
     const fileSizeMB = req.file.size / (1024 * 1024);
-    if (fileSizeMB > 350) {
-      await cloudinary.uploader.destroy(result.public_id, {
-        resource_type: "video",
-      });
+    if (fileSizeMB > 500) {
       return res
         .status(400)
-        .json({ success: false, message: "Video size exceeds 350MB limit." });
+        .json({ success: false, message: "Video size exceeds 500MB limit." });
     }
+
+    // Generate unique key for S3
+    const fileExtension = req.file.originalname.split('.').pop();
+    const key = `ads_videos/${Date.now()}-${Math.round(Math.random() * 1e9)}.${fileExtension}`;
+
+    // Upload to S3
+    const parallelUploads3 = new Upload({
+      client: s3Client,
+      params: {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: key,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      },
+    });
+
+    const uploadResult = await parallelUploads3.done();
+
+    // Generate a presigned URL for the uploaded file
+    const getObjectParams = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: key,
+    };
+    
+    const fileUrl = await getSignedUrl(
+      s3Client,
+      new GetObjectCommand(getObjectParams),
+      { expiresIn: 60 * 60 * 24 * 7 } // 7 days expiration
+    );
 
     const newVideo = await Video.create({
       filename: filename || req.file.originalname,
       description,
       brand,
       expiryDate,
-      fileUrl: result.secure_url,
-      cloudinaryId: result.public_id,
-      fileSize: result.bytes,
+      fileUrl: fileUrl,
+      s3Key: key,
+      fileSize: req.file.size,
       status: "active",
     });
 
@@ -93,12 +109,3 @@ export const uploadVideo = async (req, res) => {
       .json({ success: false, message: "Failed to upload video", error });
   }
 };
-
-
-
-
-
-
-
-
-
